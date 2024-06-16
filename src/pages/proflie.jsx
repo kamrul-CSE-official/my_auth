@@ -1,27 +1,74 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { logout, userData } from "../utils/authServices";
+
 const ProfilePage = () => {
-  // Mock user data for demonstration purposes
-  const user = {
-    profilePic: "https://via.placeholder.com/150", // Placeholder image URL
-    fullName: "John Doe",
-    email: "john.doe@example.com",
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const data = await userData();
+        if (data) {
+          setUser(data);
+        } else {
+          setError("Error loading user data.");
+        }
+      } catch (error) {
+        setError("Error loading user data.");
+      }
+      setLoading(false);
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return (
+      <div>
+        {error}
+        <button onClick={() => window.location.reload()}>Retry</button>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <div>Error loading user data.</div>;
+  }
 
   return (
     <div className="profile-container">
       <h2>Profile</h2>
       <div className="profile-pic">
-        <img src={user.profilePic} alt="Profile" />
+        <img
+          src={user.img || "https://via.placeholder.com/150"}
+          alt="Profile"
+        />
       </div>
       <div className="profile-info">
         <p>
-          <strong>Name:</strong> {user.fullName}
+          <strong>Name:</strong> {user.name}
         </p>
         <p>
           <strong>Email:</strong> {user.email}
         </p>
       </div>
       <div style={{ margin: "30px 10px" }}>
-        <button style={{ backgroundColor: "red" }}>Logout</button>
+        <button onClick={handleLogout} style={{ backgroundColor: "red" }}>
+          Logout
+        </button>
         <button style={{ backgroundColor: "blue" }}>Reset password</button>
       </div>
     </div>

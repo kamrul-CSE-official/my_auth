@@ -30,6 +30,23 @@
   margin: 10px 0;
 }
 
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[style*="red"] {
+  background-color: red;
+}
+
+button[style*="blue"] {
+  background-color: blue;
+}
+
 
 .error-text{
   color: red;
