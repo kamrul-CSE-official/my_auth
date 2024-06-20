@@ -3,8 +3,9 @@ import SignupPage from "../pages/signup";
 import LoginPage from "../pages/login";
 import MainLayout from "../layouts/mainLayouts";
 import PrivateRoute from "./privateRoute.jsx";
-import ProfilePage from "../pages/proflie";
+import ProfilePage from "../pages/profile.jsx";
 import HomePage from "../pages/home.jsx";
+import ResetPasswordPage from "../pages/resetPassword.jsx";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: "signup",
         element: <SignupPage />,
+      },
+      {
+        path: "resetPassword",
+        element: <ResetPasswordPage />,
       },
     ],
   },

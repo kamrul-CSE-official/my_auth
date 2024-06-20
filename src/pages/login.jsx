@@ -11,6 +11,8 @@ const LoginPage = () => {
   const {
     register,
     handleSubmit,
+    setValue,
+    getValues,
     reset,
     formState: { errors },
   } = useForm();
@@ -20,7 +22,6 @@ const LoginPage = () => {
     setMessage(null);
     setErrorMessage(null);
     try {
-      console.log(data);
       const req = await axios.post(`${envConfig.publicApi}/auth/login`, data);
       if (req?.data?.status === 200) {
         localStorage.setItem("accessToken", req?.data?.data?.accessToken);
@@ -29,16 +30,44 @@ const LoginPage = () => {
       } else {
         setErrorMessage(req?.data?.message);
       }
-      reset();
     } catch (error) {
       console.log("Error during login:", error);
       setErrorMessage(
         "Login failed. Please check your credentials and try again."
       );
-      reset();
     } finally {
       setLoading(false);
       reset();
+    }
+  };
+
+  const handleForgetPassword = async () => {
+    const email = getValues("email");
+    if (!email) {
+      setErrorMessage("Email is required to reset password.");
+      return;
+    }
+
+    setLoading(true);
+    setMessage(null);
+    setErrorMessage(null);
+    try {
+      const req = await axios.post(
+        `${envConfig.publicApi}/auth/forget-password`,
+        { email }
+      );
+      if (req?.data?.status === 200) {
+        setMessage("Password reset link has been sent to your email.");
+      } else {
+        setErrorMessage(req?.data?.message);
+      }
+    } catch (error) {
+      console.log("Error during password reset:", error);
+      setErrorMessage(
+        "Failed to send password reset link. Please try again later."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,7 +115,14 @@ const LoginPage = () => {
           {errors.password && (
             <p className="error-text">{errors.password.message}</p>
           )}
-          <Link to="#">Forget password!</Link>
+          <button
+            type="button"
+            style={{ padding: "5px", margin: "10px" }}
+            onClick={handleForgetPassword}
+            disabled={loading}
+          >
+            Forget password!
+          </button>
         </div>
 
         <button style={{ marginTop: "30px" }} type="submit" disabled={loading}>
