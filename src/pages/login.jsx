@@ -1,20 +1,56 @@
+import { useState } from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import envConfig from "../config/envConfig";
 
 const LoginPage = () => {
+  const [message, setMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    setLoading(true);
+    setMessage(null);
+    setErrorMessage(null);
+    try {
+      console.log(data);
+      const req = await axios.post(`${envConfig.publicApi}/auth/login`, data);
+      if (req?.data?.status === 200) {
+        localStorage.setItem("accessToken", req?.data?.data?.accessToken);
+        setMessage("Login successful!");
+        window.location.href = "/profile";
+      } else {
+        setErrorMessage(req?.data?.message);
+      }
+      reset();
+    } catch (error) {
+      console.log("Error during login:", error);
+      setErrorMessage(
+        "Login failed. Please check your credentials and try again."
+      );
+      reset();
+    } finally {
+      setLoading(false);
+      reset();
+    }
   };
 
   return (
     <div className="login-container">
       <h2>Login</h2>
+      {errorMessage && (
+        <p style={{ fontSize: "20px" }} className="error-text">
+          {errorMessage}
+        </p>
+      )}
+      {message && <p style={{ color: "green", fontSize: "20px" }}>{message}</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div style={{ width: "100%" }}>
           <label htmlFor="email">Email</label>
@@ -50,14 +86,14 @@ const LoginPage = () => {
           {errors.password && (
             <p className="error-text">{errors.password.message}</p>
           )}
-          <Link to="#">Forget password !</Link>
+          <Link to="#">Forget password!</Link>
         </div>
 
-        <button style={{ marginTop: "30px" }} type="submit">
-          Login
+        <button style={{ marginTop: "30px" }} type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
-      <Link to="/signup">Do not have an account? Sign Up</Link>
+      <Link to="/signup">Don't have an account? Sign Up</Link>
     </div>
   );
 };

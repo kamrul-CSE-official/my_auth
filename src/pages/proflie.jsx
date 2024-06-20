@@ -19,6 +19,7 @@ const ProfilePage = () => {
         }
       } catch (error) {
         setError("Error loading user data.");
+        navigate("/login");
       }
       setLoading(false);
     };
