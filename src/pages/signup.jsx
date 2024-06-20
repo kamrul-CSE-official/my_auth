@@ -25,6 +25,7 @@ const SignupPage = () => {
             style={{ width: "100%" }}
             type="file"
             id="profilePic"
+            accept="image/png, image/gif, image/jpeg"
             {...register("profilePic", {
               required: "Profile picture is required",
             })}

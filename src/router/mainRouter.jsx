@@ -4,6 +4,7 @@ import LoginPage from "../pages/login";
 import MainLayout from "../layouts/mainLayouts";
 import PrivateRoute from "./privateRoute.jsx";
 import ProfilePage from "../pages/proflie";
+import HomePage from "../pages/home.jsx";
 
 const router = createBrowserRouter([
   {
@@ -12,6 +13,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
+        element: <HomePage />,
+      },
+      {
+        path: "/profile",
         element: (
           <PrivateRoute>
             <ProfilePage />

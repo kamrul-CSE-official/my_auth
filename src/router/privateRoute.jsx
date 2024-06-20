@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { userData } from "../utils/authServices";
 
 const PrivateRoute = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchUserData = async () => {
       const data = await userData();
-      setUser(data);
+      if (data) setUser(data);
       setLoading(false);
     };
 
@@ -20,10 +22,11 @@ const PrivateRoute = ({ children }) => {
     return <div>Loading...</div>;
   }
 
-  // const isAuthenticated = !!user;
-  const isAuthenticated = true;
+  const isAuthenticated = !!user;
+  // const isAuthenticated = true;
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  return isAuthenticated ? children : navigate("/login");
+  // return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;

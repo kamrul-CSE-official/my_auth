@@ -5,7 +5,7 @@ export const userData = async () => {
   if (!token) {
     return null;
   }
-  return jwtDecode(token);
+  return await jwtDecode(token);
 };
 
 export const logout = async () => {
