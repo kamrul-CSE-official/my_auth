@@ -25,7 +25,7 @@ const ProfilePage = () => {
     };
 
     fetchUserData();
-  }, []);
+  }, [navigate]);
 
   const handleLogout = async () => {
     await logout();

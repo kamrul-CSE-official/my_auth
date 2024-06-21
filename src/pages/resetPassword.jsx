@@ -1,17 +1,23 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { tokenDecode } from "../utils/authServices";
+import { logout, tokenDecode } from "../utils/authServices";
+import axios from "axios";
+import envConfig from "../config/envConfig";
 
 const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
   const [user, setUser] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
   const token = searchParams.get("token");
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -30,13 +36,43 @@ const ResetPasswordPage = () => {
     }
   }, [token, navigate, setValue]);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    setLoading(true);
+    setErrorMessage(null);
+    setMessage(null);
+
     if (data.password !== data.confirmPassword) {
-      alert("Passwords do not match");
+      setErrorMessage("Passwords do not match");
+      setLoading(false);
       return;
     }
-    console.log(data);
-    // Implement password reset logic here
+
+    try {
+      const response = await axios.post(
+        `${envConfig.publicApi}/auth/reset-password`,
+        {
+          email: data.email,
+          newPassword: data.password,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response?.data && response?.data?.status === 200) {
+        setMessage(response?.data?.message);
+        logout();
+        window.location.href = "/login";
+      } else {
+        setErrorMessage("Something went wrong");
+      }
+    } catch (error) {
+      setErrorMessage(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+      reset();
+    }
   };
 
   return (
@@ -139,7 +175,17 @@ const ResetPasswordPage = () => {
                   color: "#fff",
                   cursor: "pointer",
                 }}
+                disabled={loading}
               />
+              {loading && <p style={{ textAlign: "center" }}>Loading...</p>}
+              {message && (
+                <p style={{ color: "green", textAlign: "center" }}>{message}</p>
+              )}
+              {errorMessage && (
+                <p style={{ color: "red", textAlign: "center" }}>
+                  {errorMessage}
+                </p>
+              )}
             </form>
           </div>
         ) : (

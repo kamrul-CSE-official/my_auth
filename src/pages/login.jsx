@@ -11,7 +11,6 @@ const LoginPage = () => {
   const {
     register,
     handleSubmit,
-    setValue,
     getValues,
     reset,
     formState: { errors },
@@ -129,6 +128,7 @@ const LoginPage = () => {
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
+      {/* eslint-disable-next-line react/no-unescaped-entities */}
       <Link to="/signup">Don't have an account? Sign Up</Link>
     </div>
   );
