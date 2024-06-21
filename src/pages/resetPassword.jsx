@@ -1,19 +1,20 @@
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!token) window.location.href = "/login";
-  }, []);
+    if (!token) navigate("/login");
+  }, [token, navigate]);
 
   return (
     <div>
       Reset password
       <br />
-      {token && <p>{token}</p>}
+      {token && <p>Token: {token}</p>}
     </div>
   );
 };
