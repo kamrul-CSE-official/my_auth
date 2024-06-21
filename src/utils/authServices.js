@@ -1,13 +1,27 @@
 import { jwtDecode } from "jwt-decode";
 
-export const userData = async () => {
-  const token = (await localStorage.getItem("accessToken")) || null;
+export const userData = () => {
+  const token = localStorage.getItem("accessToken");
   if (!token) {
     return null;
   }
-  return await jwtDecode(token);
+  try {
+    return jwtDecode(token);
+  } catch (error) {
+    console.error("Failed to decode token:", error);
+    return null;
+  }
 };
 
-export const logout = async () => {
-  await localStorage.removeItem("accessToken");
+export const tokenDecode = (token) => {
+  try {
+    return jwtDecode(token);
+  } catch (error) {
+    console.error("Failed to decode token:", error);
+    return null;
+  }
+};
+
+export const logout = () => {
+  localStorage.removeItem("accessToken");
 };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { logout, userData } from "../utils/authServices";
 
 const ProfilePage = () => {
@@ -70,7 +70,11 @@ const ProfilePage = () => {
         <button onClick={handleLogout} style={{ backgroundColor: "red" }}>
           Logout
         </button>
-        <button style={{ backgroundColor: "blue" }}>Reset password</button>
+        <Link
+          to={`/resetPassword?token=${localStorage.getItem("accessToken")}`}
+        >
+          <button style={{ backgroundColor: "blue" }}>Reset password</button>
+        </Link>
       </div>
     </div>
   );
