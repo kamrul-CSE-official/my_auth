@@ -33,15 +33,15 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "login",
+        path: "/login",
         element: <LoginPage />,
       },
       {
-        path: "signup",
+        path: "/signup",
         element: <SignupPage />,
       },
       {
-        path: "resetPassword",
+        path: "/resetPassword",
         element: <ResetPasswordPage />,
       },
     ],
